@@ -6,7 +6,7 @@
 /*   By: vpolojie <vpolojie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 07:51:11 by vpolojie          #+#    #+#             */
-/*   Updated: 2022/10/23 15:01:42 by vpolojie         ###   ########.fr       */
+/*   Updated: 2022/10/23 15:32:00 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void	ft_first_process(char **argv, char **envp, t_data *data, int *pipetab)
 		write(2, "command not found\n", 18);
 		exit(EXIT_FAILURE);
 	}
+	dprintf(2, "first process executed\n");
 	execve(data->path, data->options, envp);
 	perror("execve child");
 }
@@ -91,7 +92,9 @@ void	ft_first_process(char **argv, char **envp, t_data *data, int *pipetab)
 void	ft_last_process(char **argv, char **envp, t_data *data, int *pipetab, int argc, int k)
 {
 	int		fd_exit;
+	int		i;
 
+	i = 0;
 	data->options = ft_split(argv[argc - 2], ' ');
 	fd_exit = open(argv[argc -1], O_CREAT | O_WRONLY);
 	if (fd_exit == -1)
@@ -100,15 +103,20 @@ void	ft_last_process(char **argv, char **envp, t_data *data, int *pipetab, int a
 		exit(EXIT_FAILURE);
 	}
 	dup2(fd_exit, STDOUT_FILENO);
-	dup2(pipetab[k], STDIN_FILENO);
+	dup2(pipetab[k - 2], STDIN_FILENO);
 	close(fd_exit);
-	close(pipetab[k + 1]);
+	while (i != k - 1)
+	{
+		close(pipetab[i]);
+		i++;
+	}
 	data->path = ft_find_path(data->options[0], argv[argc - 2], envp);
 	if (data->path == NULL)
 	{
 		write(2, "command not found\n", 18);
 		exit(EXIT_FAILURE);
 	}
+	dprintf(2, "last process executed\n");
 	execve(data->path, data->options, envp);
 	perror("execve parent");
 }
@@ -143,28 +151,27 @@ int	main(int argc, char **argv, char **envp)
 	if (pid == -1)
 		perror("fork error");
 	else if (pid == 0)
-	{
-		write(2, "first\n", 6);
 		ft_first_process(argv, envp, &data, pipetab);
-	}
 	else if (pid > 0)
-	{	
+	{
 		// main while loop with all children
-		waitpid(pid, &status, 0);
 		pipe_index = 2;
 		j = 3;
 		while (j != argc -1)
 		{
-			write(2, "1\n", 2);
 			pid2 = fork();
 			if (pid2 == -1)
 				perror("fork error");
 			else if (pid2 == 0)
 			{
 				if (j == (argc -2))
+				{
 					ft_last_process(argv, envp, &data, pipetab, argc, pipe_index);
+					break ;
+				}
 				else if (j != (argc -2))
 				{
+
 					data.options = ft_split(argv[j], ' ');
 					dup2(pipetab[pipe_index - 2], STDIN_FILENO);
 					dup2(pipetab[pipe_index + 1], STDOUT_FILENO);
@@ -182,6 +189,7 @@ int	main(int argc, char **argv, char **envp)
 						write(2, "command not found\n", 18);
 						exit(EXIT_FAILURE);
 					}
+					dprintf(2, "%d process executed\n", j);
 					execve(data.path, data.options, envp);
 					perror("execve parent");
 				}
@@ -192,9 +200,12 @@ int	main(int argc, char **argv, char **envp)
 				close(pipetab[i]);
 				i++;
 			}
+			waitpid(pid, &status, 0);
+			waitpid(pid2, &status, 0);
 			j++;
 			pipe_index = pipe_index + 2;
 		}
+		waitpid(pid, &status, 0);
 		waitpid(pid2, &status, 0);
 	}
 	return (0);
