@@ -6,7 +6,7 @@
 /*   By: vpolojie <vpolojie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/18 13:04:33 by vpolojie          #+#    #+#             */
-/*   Updated: 2022/10/19 13:17:39 by vpolojie         ###   ########.fr       */
+/*   Updated: 2022/11/04 10:31:23 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,4 @@ void	ft_pipex_end(int pid, int pid2, t_data *data)
 	close(data->pipetab[1]);
 	waitpid(pid, &data->status, 0);
 	waitpid(pid2, &data->status, 0);
-	while (data->options[i] != 0)
-	{
-		free(data->options[i]);
-		i++;
-	}
 }

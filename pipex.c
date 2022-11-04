@@ -6,7 +6,7 @@
 /*   By: vpolojie <vpolojie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/11 15:19:33 by vpolojie          #+#    #+#             */
-/*   Updated: 2022/10/18 13:57:13 by vpolojie         ###   ########.fr       */
+/*   Updated: 2022/11/04 11:13:41 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,10 +93,10 @@ void	ft_parent_process(char **argv, char **envp, t_data *data)
 	int		fd_exit;
 
 	data->options = ft_split(argv[3], ' ');
-	fd_exit = open(argv[4], O_CREAT | O_WRONLY);
+	fd_exit = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 0777);
 	if (fd_exit == -1)
 	{
-		perror("open");
+		perror("open2");
 		exit(EXIT_FAILURE);
 	}
 	dup2(fd_exit, STDOUT_FILENO);
