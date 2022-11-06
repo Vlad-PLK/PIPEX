@@ -6,7 +6,7 @@
 /*   By: vpolojie <vpolojie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 10:42:25 by vpolojie          #+#    #+#             */
-/*   Updated: 2022/11/04 11:25:59 by vpolojie         ###   ########.fr       */
+/*   Updated: 2022/11/05 21:54:29 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,10 @@ char	*ft_find_path(char *arg, char *arg2, char **envp)
 	all_paths = ft_split(envp_path, ':');
 	free(envp_path);
 	i = 0;
+	if (ft_strncmp((const char *)arg2, "/bin", ft_strlen(arg2)) == 0)
+		return (NULL);
+	if (ft_strncmp((const char *)arg2, "/bin/", ft_strlen(arg2)) == 0)
+		return (NULL);
 	if (access(arg2, F_OK | X_OK) == 0)
 		return (arg2);
 	while (all_paths[i])
@@ -64,7 +68,7 @@ void	ft_first_process(char **argv, char **envp, t_data *data)
 	fd_in = open(argv[1], O_RDONLY);
 	if (fd_in == -1)
 	{
-		perror("open");
+		perror("open first process");
 		exit(EXIT_FAILURE);
 	}
 	dup2(fd_in, STDIN_FILENO);
@@ -74,11 +78,11 @@ void	ft_first_process(char **argv, char **envp, t_data *data)
 	data->path = ft_find_path(data->options[0], argv[2], envp);
 	if (data->path == NULL)
 	{
-		write(2, "command not found\n", 18);
+		write(2, "command 1 not found\n", 20);
 		exit(EXIT_FAILURE);
 	}
 	execve(data->path, data->options, envp);
-	perror("execve child");
+	perror("execve first child");
 }
 
 void	ft_close_pipes(t_data *data)
@@ -99,7 +103,7 @@ void	ft_last_process(char **argv, char **envp, t_data *data, int argc)
 	fd_exit = open(argv[argc -1], O_CREAT | O_RDWR | O_TRUNC, 0777);
 	if (fd_exit == -1)
 	{
-		perror("open");
+		perror("open last process");
 		exit(EXIT_FAILURE);
 	}
 	dup2(fd_exit, STDOUT_FILENO);
@@ -109,7 +113,7 @@ void	ft_last_process(char **argv, char **envp, t_data *data, int argc)
 	data->path = ft_find_path(data->options[0], argv[argc - 2], envp);
 	if (data->path == NULL)
 	{
-		write(2, "command not found\n", 18);
+		write(2, "last command not found\n", 23);
 		exit(EXIT_FAILURE);
 	}
 	execve(data->path, data->options, envp);
