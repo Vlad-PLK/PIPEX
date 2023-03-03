@@ -6,7 +6,7 @@
 /*   By: vpolojie <vpolojie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/24 10:42:25 by vpolojie          #+#    #+#             */
-/*   Updated: 2022/11/05 21:54:29 by vpolojie         ###   ########.fr       */
+/*   Updated: 2023/02/24 12:25:44 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,19 +62,16 @@ char	*ft_find_path(char *arg, char *arg2, char **envp)
 
 void	ft_first_process(char **argv, char **envp, t_data *data)
 {
-	int		fd_in;
-
 	data->options = ft_split(argv[2], ' ');
-	fd_in = open(argv[1], O_RDONLY);
-	if (fd_in == -1)
+	data->tmp_fd = open(argv[1], O_RDONLY);
+	if (data->tmp_fd == -1)
 	{
 		perror("open first process");
 		exit(EXIT_FAILURE);
 	}
-	dup2(fd_in, STDIN_FILENO);
-	dup2(data->pipetab[1], STDOUT_FILENO);
-	close(fd_in);
-	close(data->pipetab[0]);
+	dup2(data->tmp_fd, STDIN_FILENO);
+	dup2(data->tab[1], STDOUT_FILENO);
+	close(data->tab[0]);
 	data->path = ft_find_path(data->options[0], argv[2], envp);
 	if (data->path == NULL)
 	{
@@ -85,31 +82,19 @@ void	ft_first_process(char **argv, char **envp, t_data *data)
 	perror("execve first child");
 }
 
-void	ft_close_pipes(t_data *data)
-{
-	data->i = 0;
-	while (data->i != (data->nb_pipes * 2))
-	{
-		close(data->pipetab[data->i]);
-		data->i++;
-	}
-}
-
 void	ft_last_process(char **argv, char **envp, t_data *data, int argc)
 {
-	int		fd_exit;
-
 	data->options = ft_split(argv[argc - 2], ' ');
-	fd_exit = open(argv[argc -1], O_CREAT | O_RDWR | O_TRUNC, 0777);
-	if (fd_exit == -1)
+	data->out_fd = open(argv[argc -1], O_CREAT | O_RDWR | O_TRUNC, 0777);
+	if (data->out_fd == -1)
 	{
 		perror("open last process");
 		exit(EXIT_FAILURE);
 	}
-	dup2(fd_exit, STDOUT_FILENO);
-	dup2(data->pipetab[data->pipe_index - 2], STDIN_FILENO);
-	close(fd_exit);
-	ft_close_pipes(data);
+	dup2(data->out_fd, STDOUT_FILENO);
+	dup2(data->tmp_fd, STDIN_FILENO);
+	close(data->tab[0]);
+	close(data->tab[1]);
 	data->path = ft_find_path(data->options[0], argv[argc - 2], envp);
 	if (data->path == NULL)
 	{

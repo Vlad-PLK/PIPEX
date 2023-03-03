@@ -6,7 +6,7 @@
 /*   By: vpolojie <vpolojie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/19 07:51:11 by vpolojie          #+#    #+#             */
-/*   Updated: 2022/11/06 16:42:35 by vpolojie         ###   ########.fr       */
+/*   Updated: 2023/02/24 13:14:45 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,6 @@ void	ft_create_pipetab(t_data *data, int argc)
 	data->nb_pipes = ((argc - 3) - 1);
 	data->i = data->nb_pipes;
 	data->j = 0;
-	data->pipetab = (int *)malloc(sizeof(int) * (data->nb_pipes * 2));
-	while (data->i != 0)
-	{
-		if (pipe(data->pipetab + data->j) == -1)
-			perror("pipe error");
-		data->j += 2;
-		data->i--;
-	}
 	data->pipe_index = 2;
 	data->j = 3;
 }
@@ -40,12 +32,9 @@ void	ft_pipex_bonus_end(t_data *data, int status)
 {
 	int	i;
 
-	i = 0;
-	while (i != (data->nb_pipes * 2))
-	{
-		close(data->pipetab[i]);
-		i++;
-	}
+	close(data->tab[0]);
+	close(data->tab[1]);
+	close(data->tmp_fd);
 	i = 0;
 	while (i != data->nb_pipes + 1)
 	{
@@ -57,9 +46,9 @@ void	ft_pipex_bonus_end(t_data *data, int status)
 void	ft_exec_processe(t_data *data, char **argv, char **envp)
 {
 	data->options = ft_split(argv[data->j], ' ');
-	dup2(data->pipetab[data->pipe_index - 2], STDIN_FILENO);
-	dup2(data->pipetab[data->pipe_index + 1], STDOUT_FILENO);
-	ft_close_pipes(data);
+	dup2(data->tab[1], STDOUT_FILENO);
+	dup2(data->tmp_fd, STDIN_FILENO);
+	close(data->tab[0]);
 	data->path = ft_find_path(data->options[0], argv[data->j], envp);
 	if (data->path == NULL)
 	{
@@ -91,21 +80,34 @@ int	main(int argc, char **argv, char **envp)
 	t_data	data;
 
 	ft_create_pipetab(&data, argc);
+	if (pipe(data.tab) == -1)
+		perror("pipe error\n");
 	pid = fork();
 	if (pid == -1)
 		perror("fork error");
 	else if (pid == 0)
 		ft_first_process(argv, envp, &data);
 	waitpid(pid, &status, 0);
+	close(data.tab[1]);
+	data.tmp_fd = data.tab[0];
 	while (data.j != argc -1)
 	{
+		if (pipe(data.tab) == -1)
+			perror("pipe error\n");
 		pid2 = fork();
 		if (pid2 == -1)
 			perror("fork error");
 		else if (pid2 == 0)
 			ft_loop_processes(&data, argc, argv, envp);
-		data.j++;
-		data.pipe_index = data.pipe_index + 2;
+		else
+		{
+			waitpid(pid2, &status, 0);
+			close(data.tab[1]);
+			dup2(data.tab[0], data.tmp_fd);
+			close(data.tab[0]);
+			data.j++;
+		}
 	}
-	ft_pipex_bonus_end(&data, status);
+	close(data.tmp_fd);
+	close(data.out_fd);
 }
