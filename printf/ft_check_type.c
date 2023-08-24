@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ft_check_type.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vpolojie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vpolojie <vpolojie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/29 17:21:46 by vpolojie          #+#    #+#             */
-/*   Updated: 2022/04/05 20:08:54 by vpolojie         ###   ########.fr       */
+/*   Updated: 2022/11/25 11:40:52 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include <stdarg.h>
 #include <unistd.h>
-#include "libft/libft.h"
+#include "../libft/libft.h"
 #include "ft_printf.h"
 
 size_t	ft_check_type(va_list list_arg, char c, size_t nb_cara)

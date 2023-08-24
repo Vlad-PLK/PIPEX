@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vpolojie <vpolojie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vpolojie <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/16 12:02:03 by vpolojie          #+#    #+#             */
-/*   Updated: 2022/07/28 09:34:28 by vpolojie         ###   ########.fr       */
+/*   Updated: 2022/03/26 13:08:22 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "stdlib.h"
+#include <stdlib.h>
 
-int	ft_check2(char c, char charset)
+int	ft_check(char c, char charset)
 {
 	if (c == charset)
 		return (1);
@@ -29,8 +29,8 @@ int	ft_nb_mots(char *str, char charset)
 	i = 0;
 	while (str[i] != '\0')
 	{
-		if ((ft_check2(str[i +1], charset) == 1)
-			&& ft_check2(str[i], charset) == 0)
+		if ((ft_check(str[i +1], charset) == 1)
+			&& ft_check(str[i], charset) == 0)
 			words++;
 		i++;
 	}
@@ -42,7 +42,7 @@ void	ft_write_word(char *dest, char *from, char charset)
 	int		i;
 
 	i = 0;
-	while (ft_check2(from[i], charset) == 0)
+	while (ft_check(from[i], charset) == 0)
 	{
 		dest[i] = from[i];
 		i++;
@@ -60,12 +60,12 @@ void	ft_write_split(char **strs, char *str, char charset)
 	i = 0;
 	while (str[i] != '\0')
 	{
-		if (ft_check2(str[i], charset) == 1)
+		if (ft_check(str[i], charset) == 1)
 			i++;
 		else
 		{
 			j = 0;
-			while (ft_check2(str[i + j], charset) == 0)
+			while (ft_check(str[i + j], charset) == 0)
 				j++;
 			strs[word] = (char *)malloc(sizeof(char) * (j + 1));
 			ft_write_word(strs[word], str + i, charset);

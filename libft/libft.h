@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vpolojie <vpolojie@student.42.fr>          +#+  +:+       +#+        */
+/*   By: vpolojie <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/10/18 08:49:52 by vpolojie          #+#    #+#             */
-/*   Updated: 2022/10/18 08:54:40 by vpolojie         ###   ########.fr       */
+/*   Created: 2022/03/24 14:21:16 by vpolojie          #+#    #+#             */
+/*   Updated: 2022/04/05 11:31:31 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #ifndef LIBFT_H
 # define LIBFT_H
 
@@ -37,11 +36,10 @@ int					ft_isascii(int c);
 int					ft_isprint(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
-void				*ft_calloc1(size_t n, size_t size);
+void				*ft_calloc(size_t n, size_t size);
 char				*ft_strdup(const char *src);
 char				*ft_substr(char const *s, unsigned int start, size_t len);
-char				*ft_strjoin1(char const *s1, char const *s2);
-char				*ft_strjoin_free(char *s1, char *s2);
+char				*ft_strjoin(char const *s1, char const *s2);
 char				*ft_strtrim(char const *s1, char const *set);
 char				**ft_split(char const *str, char charset);
 void				ft_putchar_fd(char c, int fd);

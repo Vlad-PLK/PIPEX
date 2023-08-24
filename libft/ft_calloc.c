@@ -1,39 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vpolojie <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/23 18:37:04 by vpolojie          #+#    #+#             */
-/*   Updated: 2022/05/30 15:25:06 by vpolojie         ###   ########.fr       */
+/*   Created: 2022/03/24 12:53:43 by vpolojie          #+#    #+#             */
+/*   Updated: 2022/03/24 14:53:04 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-int	ft_atoi(const char *str)
-{
-	int		i;
-	int		str0;
-	int		m;
+#include <unistd.h>
+#include <stdlib.h>
 
-	str0 = 0;
+void	*ft_calloc(size_t n, size_t size)
+{
+	unsigned char	*a;
+	unsigned long	i;
+
 	i = 0;
-	while ((0 <= str[i]) && (str[i] <= 32))
-		i++;
-	if ((str[i] == 45) || (str[i] == 43))
+	a = (unsigned char *)malloc(n * size);
+	if (!(a))
+		return (0);
+	while (i != (n * size))
 	{
-		if (str[i] == 45)
-			m = 1;
+		a[i] = 0;
 		i++;
 	}
-	if ((str[i] == 45) || (str[i] == 43))
-		return (str0);
-	while (('0' <= str[i]) && (str[i] <= '9'))
-	{
-		str0 = str0 * 10 + (str[i] - 48);
-		i++;
-	}
-	if (m == 1)
-		str0 = str0 * -1;
-	m = 0;
-	return (str0);
+	return (a);
 }

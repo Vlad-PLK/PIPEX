@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putnbr_fd2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vpolojie <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vpolojie <vpolojie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/31 19:15:14 by vpolojie          #+#    #+#             */
-/*   Updated: 2022/04/05 20:10:34 by vpolojie         ###   ########.fr       */
+/*   Updated: 2022/11/25 11:42:26 by vpolojie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include <unistd.h>
-#include "libft/libft.h"
+#include "../libft/libft.h"
 
 void	ft_putnbr_fd2(int nb, int fd, size_t *nb_cara)
 {
