@@ -28,4 +28,12 @@ Once again here's a quick explanation from GeekforGeeks :
 <p align="center">
   <img width="50%" alt="pipes_gfg" src="https://github.com/Vlad-PLK/PIPEX/assets/61476758/de76a4e1-1bf5-4fec-964e-aa0ffc5c4146">
 </p>
+Finally, we need to combine fork and pipe functions to create the program that will execute a command like I made above.
+Here's a quick pseudocode of what it should be : 
+```C
+int  main(void)
+{
+      
+}
+```
 
