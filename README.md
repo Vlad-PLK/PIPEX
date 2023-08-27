@@ -37,7 +37,6 @@ Once again here's a quick explanation from GeekforGeeks :
 </p>
 Finally, we need to combine fork and pipe functions to create the program that will execute a command like I made above.
 Here's a quick pseudocode of what it should be :
-<br></br>
 
 ```C
 int  main(void)
